@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TermionSharp", "TermionSharp\TermionSharp.csproj", "{F71A8E11-6D61-4BBE-966A-D6E57DB1B53E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraumUI", "TraumUI\TraumUI.csproj", "{16BFDA6C-9849-4F5A-AA2D-B48DB732EC2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleApp", "ExampleApp\ExampleApp.csproj", "{17B4133F-D44F-447C-BA45-22939DA6E451}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F71A8E11-6D61-4BBE-966A-D6E57DB1B53E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F71A8E11-6D61-4BBE-966A-D6E57DB1B53E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F71A8E11-6D61-4BBE-966A-D6E57DB1B53E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F71A8E11-6D61-4BBE-966A-D6E57DB1B53E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16BFDA6C-9849-4F5A-AA2D-B48DB732EC2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16BFDA6C-9849-4F5A-AA2D-B48DB732EC2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16BFDA6C-9849-4F5A-AA2D-B48DB732EC2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16BFDA6C-9849-4F5A-AA2D-B48DB732EC2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17B4133F-D44F-447C-BA45-22939DA6E451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17B4133F-D44F-447C-BA45-22939DA6E451}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17B4133F-D44F-447C-BA45-22939DA6E451}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17B4133F-D44F-447C-BA45-22939DA6E451}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
