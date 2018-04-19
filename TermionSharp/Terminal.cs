@@ -41,6 +41,8 @@ namespace TermionSharp {
 			if((x & Color.Bold) != 0) {
 				if((x & Color.Bright) != 0)
 					prefix = "1;9";
+				else if((x & Color.Underline) != 0)
+					prefix = "4;1;3";
 				else
 					prefix = "1;3";
 			} else if((x & Color.Bright) != 0)

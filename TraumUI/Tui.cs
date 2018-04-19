@@ -5,6 +5,7 @@ using TermionSharp;
 
 namespace TraumUI {
 	public class Tui : IDisposable {
+		public const char CursorPlaceholder = '\x06';
 		public static Tui Instance { get; private set; }
 		
 		bool Disposed, Exiting;
@@ -35,7 +36,8 @@ namespace TraumUI {
 				Term.Clear();
 				for(var y = 0; y < data.Count; ++y) {
 					Term.CursorPosition = (0, y);
-					Term.Write(data[y]);
+					var line = data[y];
+					Term.Write(line.ToAnsiString());
 				}
 			}
 		}
@@ -54,10 +56,15 @@ namespace TraumUI {
 						TabCycle((key.Modifiers & ConsoleModifiers.Shift) != 0);
 						break;
 					case ConsoleKey.Spacebar:
-						Focused?.Click();
+						if(!Focused?.Key(key) ?? false)
+							Focused?.Click();
 						break;
 					case ConsoleKey.Q:
-						Exit();
+						if(!Focused?.Key(key) ?? false)
+							Exit();
+						break;
+					default:
+						Focused?.Key(key);
 						break;
 				}
 				Thread.Sleep(16);

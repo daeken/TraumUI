@@ -57,7 +57,7 @@ namespace TraumUI.Widgets {
 				if(twidth == maxSpace.Item1)
 					break;
 			}
-
+			
 			var rowHeights = new int[Rows];
 			var theight = 0;
 			for(var row = 0; row < Rows; ++row) {
@@ -82,9 +82,9 @@ namespace TraumUI.Widgets {
 			return (columnWidths.Sum() + HPadding * (Columns - 1), rowHeights.Sum() + VPadding * (Rows - 1));
 		}
 
-		public IReadOnlyList<string> Render((int, int) maxSpace) {
+		public IReadOnlyList<Rope> Render((int, int) maxSpace) {
 			var (columnWidths, rowHeights) = CellSizes(maxSpace);
-			var olines = new string[rowHeights.Sum() + VPadding * (Rows - 1)];
+			var olines = new Rope[rowHeights.Sum() + VPadding * (Rows - 1)];
 			var voff = 0;
 			var hs = new string(' ', HPadding);
 			for(var row = 0; row < Rows; ++row) {
@@ -92,17 +92,17 @@ namespace TraumUI.Widgets {
 				for(var column = 0; column < Columns; ++column) {
 					var child = _Children[row][column];
 					var width = columnWidths[column];
-					var ren = child?.Render((width, height)) ?? new string[height];
+					var ren = child?.Render((width, height)) ?? new Rope[height];
 					if(ren.Count > height)
 						ren = ren.Take(height).ToList();
 					else if(ren.Count < height)
-						ren = ren.Concat(Enumerable.Range(0, height - ren.Count).Select(x => "")).ToList();
+						ren = ren.Concat(Enumerable.Range(0, height - ren.Count).Select(x => Rope.Empty)).ToList();
 
 					for(var i = 0; i < height; ++i) {
-						var line = ren[i] ?? "";
-						var al = line.AnsiLength();
+						var line = ren[i] ?? Rope.Empty;
+						var al = line.Length;
 						if(al > width)
-							line = line.AnsiSubstring(0, width);
+							line = line.Substring(0, width);
 						else if(al < width)
 							line += new string(' ', width - al);
 						line += hs;
@@ -124,5 +124,6 @@ namespace TraumUI.Widgets {
 		}
 		
 		public void Click() {}
+		public bool Key(ConsoleKeyInfo key) => false;
 	}
 }

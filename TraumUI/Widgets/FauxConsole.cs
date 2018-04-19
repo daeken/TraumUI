@@ -27,8 +27,8 @@ namespace TraumUI.Widgets {
 		public IReadOnlyList<IWidget> Children => Enumerable.Empty<IWidget>().ToList();
 		public (int, int) Size((int, int) maxSpace) => maxSpace;
 
-		public IReadOnlyList<string> Render((int, int) maxSpace) {
-			var oarray = new string[Math.Min(maxSpace.Item2, Buffer.Length)];
+		public IReadOnlyList<Rope> Render((int, int) maxSpace) {
+			var oarray = new Rope[Math.Min(maxSpace.Item2, Buffer.Length)];
 			var oi = 0;
 			for(var i = 0; i < oarray.Length && oi < oarray.Length; ++i) {
 				var line = Buffer[i];
@@ -37,11 +37,11 @@ namespace TraumUI.Widgets {
 					continue;
 				}
 
-				if(!Linewrap || line.AnsiLength() <= maxSpace.Item1)
+				if(!Linewrap || line.Length <= maxSpace.Item1)
 					oarray[oi++] = line;
 				else
-					for(var j = 0; j < line.AnsiLength() && oi < oarray.Length; j += maxSpace.Item1)
-						oarray[oi++] = line.AnsiSubstring(j, Math.Min(line.AnsiLength() - j, maxSpace.Item1));
+					for(var j = 0; j < line.Length && oi < oarray.Length; j += maxSpace.Item1)
+						oarray[oi++] = line.Substring(j, Math.Min(line.Length - j, maxSpace.Item1));
 			}
 			return oarray;
 		}
@@ -49,6 +49,7 @@ namespace TraumUI.Widgets {
 		public void Focus() {}
 		public void Unfocus() {}
 		public void Click() {}
+		public bool Key(ConsoleKeyInfo key) => false;
 
 		public override void Write(char value) {
 			if(value == '\r') return;

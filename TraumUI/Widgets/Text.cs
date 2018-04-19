@@ -4,28 +4,28 @@ using System.Linq;
 
 namespace TraumUI.Widgets {
 	public class Text : IWidget {
-		string BValue;
+		Rope BValue;
 
-		public string Value {
+		public Rope Value {
 			get => BValue;
 			set {
 				Tui.Instance.RedrawRequested = true;
-				BValue = value ?? "";
+				BValue = value ?? Rope.Empty;
 			}
 		}
 		
-		public Text(string value = "") => Value = value;
+		public Text(Rope value = null) => Value = value;
 
 		public int? TabIndex { get; set; }
 
 		public IReadOnlyList<IWidget> Children => Enumerable.Empty<IWidget>().ToList();
 
 		public (int, int) Size((int, int) maxSpace) {
-			var lines = (Value ?? "").Split('\n');
-			return (lines.Select(x => x.AnsiLength()).Aggregate(0, Math.Max, x => x), lines.Length);
+			var lines = Value.Split('\n');
+			return (lines.Select(x => x.Length).Aggregate(0, Math.Max, x => x), lines.Length);
 		}
 
-		public IReadOnlyList<string> Render((int, int) maxSpace) => (Value ?? "").Split('\n');
+		public IReadOnlyList<Rope> Render((int, int) maxSpace) => Value.Split('\n');
 		public void Focus() {
 			throw new NotImplementedException();
 		}
@@ -35,5 +35,6 @@ namespace TraumUI.Widgets {
 		}
 		
 		public void Click() {}
+		public bool Key(ConsoleKeyInfo key) => false;
 	}
 }

@@ -33,9 +33,9 @@ namespace TraumUI.Widgets {
 			}
 		}
 
-		public IReadOnlyList<string> Render((int, int) maxSpace) {
+		public IReadOnlyList<Rope> Render((int, int) maxSpace) {
 			var osize = Size(maxSpace);
-			var oarray = Enumerable.Range(0, osize.Item2).Select(x => "").ToArray();
+			var oarray = Enumerable.Range(0, osize.Item2).Select(x => Rope.Empty).ToArray();
 
 			if(Direction == SplitDirection.Horizontal) {
 				var x = 0;
@@ -43,11 +43,11 @@ namespace TraumUI.Widgets {
 					var sw = Math.Min(dim.Value(maxSpace.Item1, maxSpace.Item1 - x), osize.Item1 - x);
 					var sub = widget.Render((sw, maxSpace.Item2));
 					for(var i = 0; i < Math.Min(maxSpace.Item2, sub.Count); ++i) {
-						var row = sub[i] ?? "";
-						if(row.AnsiLength() > sw)
-							row = row.AnsiSubstring(0, sw);
-						else if(row.AnsiLength() < sw)
-							row += new string(' ', sw - row.AnsiLength());
+						var row = sub[i] ?? Rope.Empty;
+						if(row.Length > sw)
+							row = row.Substring(0, sw);
+						else if(row.Length < sw)
+							row += new string(' ', sw - row.Length);
 						oarray[i] += row;
 					}
 
@@ -61,7 +61,7 @@ namespace TraumUI.Widgets {
 					var height = dim.Value(maxSpace.Item2, maxSpace.Item2 - y);
 					var sub = widget.Render((maxSpace.Item1, height));
 					foreach(var t in sub.Take(Math.Min(sub.Count, height))) {
-						oarray[y++] = t == null ? new string(' ', maxSpace.Item1) : t.AnsiSubstring(0, maxSpace.Item1);
+						oarray[y++] = t == null ? new string(' ', maxSpace.Item1) : t.Substring(0, maxSpace.Item1);
 						if(y >= osize.Item2)
 							break;
 					}
@@ -83,5 +83,7 @@ namespace TraumUI.Widgets {
 		}
 		
 		public void Click() {}
+		
+		public bool Key(ConsoleKeyInfo key) => false;
 	}
 }
