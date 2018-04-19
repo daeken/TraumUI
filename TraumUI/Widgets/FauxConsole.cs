@@ -23,6 +23,7 @@ namespace TraumUI.Widgets {
 
 		public void SetActive() => Console.SetOut(this);
 
+		public IWidget Parent { get; set; }
 		public int? TabIndex { get; set; }
 		public IReadOnlyList<IWidget> Children => Enumerable.Empty<IWidget>().ToList();
 		public (int, int) Size((int, int) maxSpace) => maxSpace;

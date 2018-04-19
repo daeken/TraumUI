@@ -71,23 +71,34 @@ namespace TraumUI {
 						TabCycle((key.Modifiers & ConsoleModifiers.Shift) != 0);
 						break;
 					case ConsoleKey.Spacebar:
-						if(!Focused?.Key(key) ?? false)
+						if(!Bubble(x => x.Key(key)))
 							Focused?.Click();
 						break;
 					case ConsoleKey.Q:
-						if(!Focused?.Key(key) ?? false)
+						if(!Bubble(x => x.Key(key)))
 							Exit();
 						break;
 					default:
-						Focused?.Key(key);
+						Bubble(x => x.Key(key));
 						break;
 				}
 				Thread.Sleep(16);
 			}
 		}
 
+		bool Bubble(Func<IWidget, bool> func) {
+			var cur = Focused;
+			while(cur != null) {
+				if(func(cur))
+					return true;
+				cur = cur.Parent;
+			}
+
+			return false;
+		}
+
 		void TabCycle(bool backwards = false) {
-			var elems = Root.WalkTabIndex().ToList();
+			var elems = Root.WalkTabIndex().OrderBy(x => x.Item1).ToList();
 			if(elems.Count == 0) {
 				if(Focused != null) {
 					Focused.Unfocus();

@@ -16,6 +16,7 @@ namespace TraumUI.Widgets {
 		
 		public Text(Rope value = null) => Value = value;
 
+		public IWidget Parent { get; set; }
 		public int? TabIndex { get; set; }
 
 		public IReadOnlyList<IWidget> Children => Enumerable.Empty<IWidget>().ToList();
@@ -26,14 +27,8 @@ namespace TraumUI.Widgets {
 		}
 
 		public IReadOnlyList<Rope> Render((int, int) maxSpace) => Value.Split('\n');
-		public void Focus() {
-			throw new NotImplementedException();
-		}
-
-		public void Unfocus() {
-			throw new NotImplementedException();
-		}
-		
+		public void Focus() {}
+		public void Unfocus() {}
 		public void Click() {}
 		public bool Key(ConsoleKeyInfo key) => false;
 	}

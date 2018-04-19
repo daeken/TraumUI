@@ -13,7 +13,12 @@ namespace TraumUI.ExampleApp {
 				var right = new SplitPanel(SplitDirection.Vertical);
 				tree.Add(new PercentageDimension(30), right);
 				var ur = new Window("Upper right window");
-				ur.Body = new Text(new Rope("Testing text goes") + " here and here and\n" + " here and here and here and even more here");
+				var temp = "";
+				for(var i = 0; i < 100; ++i)
+					temp += $"{i} foo bar\n";
+				ur.Body = new ScrollContainer {
+					Body = new Text("Testing text goes here and here and here and here and here and scrolls real real nice\n" + temp) { TabIndex = 5 }
+				};
 				var lr = new Window("Lower right window!");
 				var grid = new Grid(rows: 3) { HPadding = 2 };
 				grid.Add(0, 0, new Checkbox { TabIndex = 2 });

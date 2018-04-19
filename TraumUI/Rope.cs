@@ -42,13 +42,22 @@ namespace TraumUI {
 		}
 		public static Rope operator +(string left, Rope right) => (Rope) left + right;
 
+		public static Rope operator *(Rope left, int count) => left.Repeat(count);
+		public static Rope operator *(int count, Rope left) => left.Repeat(count);
+
+		public Rope Repeat(int count) =>
+			Count == 1
+				? this[0].Repeat(count)
+				: Enumerable.Range(0, count).SelectMany(_ => this).ToRope();
+
 		public Rope Substring(int start) => Substring(start, Length - start);
 		public Rope Substring(int start, int count) {
 			if(start == 0 && count >= Length) return this;
 			var sc = FindChunkForIndex(start);
+			if(sc.Chunk == -1) return Empty;
 			var ec = FindChunkForIndex(start + count);
 			if(ec.Chunk == -1) ec = (Count - 1, this.Last().Length);
-
+			
 			Rope ret;
 
 			if(sc.Offset == 0 && sc.Chunk != ec.Chunk) {

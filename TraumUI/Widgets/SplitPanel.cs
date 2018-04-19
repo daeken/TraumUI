@@ -14,8 +14,9 @@ namespace TraumUI.Widgets {
 
 		public SplitPanel(SplitDirection direction) => Direction = direction;
 		
-		public void Add(Dimension dimension, IWidget widget) => _Children.Add((dimension, widget));
+		public void Add(Dimension dimension, IWidget widget) => _Children.Add((dimension, widget.Do(x => x.Parent = this)));
 
+		public IWidget Parent { get; set; }
 		public int? TabIndex { get; set; }
 		public IReadOnlyList<IWidget> Children => _Children.Select(x => x.Item2).ToList();
 

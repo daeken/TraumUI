@@ -18,6 +18,7 @@ namespace TraumUI.Widgets {
 
 		public event EventHandler<bool> Changed = (_, __) => { };
 
+		public IWidget Parent { get; set; }
 		public int? TabIndex { get; set; }
 		public IReadOnlyList<IWidget> Children => Enumerable.Empty<IWidget>().ToList();
 		public (int, int) Size((int, int) maxSpace) => (3, 1);

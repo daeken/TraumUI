@@ -34,11 +34,12 @@ namespace TraumUI.Widgets {
 		public Grid(int columns = 2, int rows = 2) =>
 			_Children = Enumerable.Range(0, rows).Select(y => Enumerable.Range(0, columns).Select(x => (IWidget) null).ToArray()).ToArray();
 
+		public IWidget Parent { get; set; }
 		public int? TabIndex { get; set; }
 
 		public IReadOnlyList<IWidget> Children => _Children.SelectMany(x => x).Where(x => x != null).ToList();
 
-		public void Add(int column, int row, IWidget widget) => _Children[row][column] = widget;
+		public void Add(int column, int row, IWidget widget) => _Children[row][column] = widget.Do(x => x.Parent = this);
 
 		(int[] ColumnWidths, int[] RowHeights) CellSizes((int, int) maxSpace) {
 			if(Rows == 0 || Columns == 0) return (new int[0], new int[0]);

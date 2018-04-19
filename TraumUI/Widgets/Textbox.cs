@@ -34,6 +34,7 @@ namespace TraumUI.Widgets {
 
 		public event EventHandler<string> Changed = (_, __) => { };
 		
+		public IWidget Parent { get; set; }
 		public int? TabIndex { get; set; }
 		public IReadOnlyList<IWidget> Children => new IWidget[0];
 		public (int, int) Size((int, int) maxSpace) => (Math.Min(maxSpace.Item1, Width + 4), 1);
@@ -52,18 +53,27 @@ namespace TraumUI.Widgets {
 		public bool Key(ConsoleKeyInfo key) {
 			switch(key.Key) {
 				case ConsoleKey.Backspace:
-					Value = Value.Length == 0 ? "" : Value.Substring(0, Value.Length - 1);
+					if(Value.Length != 0)
+						Value = Value.Substring(0, Value.Length - 1);
 					InputCursor = Value.Length;
 					break;
 				case ConsoleKey.LeftArrow:
+					if(key.Modifiers.HasFlag(ConsoleModifiers.Alt)) return false;
 					InputCursor = Math.Max(0, InputCursor - 1);
 					break;
 				case ConsoleKey.RightArrow:
+					if(key.Modifiers.HasFlag(ConsoleModifiers.Alt)) return false;
 					InputCursor = Math.Min(Value.Length, InputCursor + 1);
+					break;
+				case ConsoleKey.Home:
+					InputCursor = 0;
+					break;
+				case ConsoleKey.End:
+					InputCursor = Value.Length;
 					break;
 				default:
 					if(key.KeyChar < 0x20)
-						break;
+						return false;
 					Value += key.KeyChar;
 					InputCursor = Value.Length;
 					break;
