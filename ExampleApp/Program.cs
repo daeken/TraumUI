@@ -1,6 +1,4 @@
-﻿using TermionSharp;
-using TraumUI;
-using TraumUI.Widgets;
+﻿using TraumUI.Widgets;
 using static System.Console;
 
 namespace TraumUI.ExampleApp {
@@ -23,7 +21,7 @@ namespace TraumUI.ExampleApp {
 				var text = new Text("Checkbox 2!!!\nAnd some more\nAnd more");
 				grid.Add(1, 1, text);
 				grid.Add(0, 1, new Checkbox { TabIndex = 3 }.Do(cb => cb.Changed += (_, state) => text.Value = $"Checkbox 2 is {(state ? "checked" : "unchecked")}"));
-				grid.Add(1, 2, new Textbox { TabIndex = 4 });
+				grid.Add(1, 2, new Textbox { TabIndex = 4 }.Do(tb => tb.Changed += (_, tt) => WriteLine($"Textbox changed to '{tt}'")));
 				lr.Body = grid;
 				right.Add(new FixedDimension(25), ur);
 				right.Add(new StretchDimension(), lr);

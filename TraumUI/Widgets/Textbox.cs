@@ -42,8 +42,7 @@ namespace TraumUI.Widgets {
 			Rope inner = Value.Substring(0, Math.Min(Value.Length, Width));
 			if(inner.Length < Width)
 				inner += new string(' ', Width - inner.Length);
-
-			return new[] { ("[ " + inner.Underline() + " ]").If(Focused, x => x.Bold()) };
+			return new[] { ("[ " + inner.Underline() + " ]").If(Focused, x => x.Bold().If(InputCursor < Math.Min(Width, maxSpace.Item1 - 3), y => y.CursorAt(2 + InputCursor))) };
 		}
 
 		public void Focus() => this.RedrawWith(() => Focused = true);

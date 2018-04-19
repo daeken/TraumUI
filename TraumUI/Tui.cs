@@ -34,10 +34,25 @@ namespace TraumUI {
 				if(Root == null) return;
 				var data = Root.Render(Term.Size);
 				Term.Clear();
+				Term.CursorVisiblity = false;
+				(int, int)? cursorAt = null;
 				for(var y = 0; y < data.Count; ++y) {
 					Term.CursorPosition = (0, y);
 					var line = data[y];
+					var offset = 0;
+					foreach(var piece in line) {
+						if((piece.Decorations & Decoration.CursorAtStart) != 0) {
+							cursorAt = (offset, y);
+							break;
+						}
+						offset += piece.Length;
+					}
 					Term.Write(line.ToAnsiString());
+				}
+
+				if(cursorAt != null) {
+					Term.CursorPosition = cursorAt.Value;
+					Term.CursorVisiblity = true;
 				}
 			}
 		}

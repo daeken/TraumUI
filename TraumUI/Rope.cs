@@ -111,6 +111,17 @@ namespace TraumUI {
 		public Rope Bold() => this.Select(x => x.Bold()).ToRope();
 		public Rope Underline() => this.Select(x => x.Underline()).ToRope();
 
+		public Rope CursorAt(int offset = 0) {
+			if(offset == 0)
+				return this.First().CursorAt() + this.Skip(1).ToRope();
+			var c = FindChunkForIndex(offset);
+			if(c.Chunk == -1)
+				return this;
+			var sub = this.Take(c.Chunk);
+			sub = sub.Concat(this[c.Chunk].CursorAt(c.Offset));
+			return sub.Concat(this.Skip(c.Chunk + 1)).ToRope();
+		}
+
 		public string ToAnsiString() => string.Join("", this.Select(x => x.ToAnsiString()));
 
 		public void Debug() {
@@ -157,6 +168,12 @@ namespace TraumUI {
 		
 		public TextPiece Bold() => new TextPiece(Text, Foreground, Background, Decorations | Decoration.Bold);
 		public TextPiece Underline() => new TextPiece(Text, Foreground, Background, Decorations | Decoration.Underline);
+		public Rope CursorAt(int offset = 0) {
+			if(offset == 0)
+				return new TextPiece(Text, Foreground, Background, Decorations | Decoration.CursorAtStart);
+			else
+				return Substring(0, offset) + Substring(offset).CursorAt();
+		}
 
 		public static TextPiece operator *(TextPiece piece, int count) => piece.Repeat(count);
 
