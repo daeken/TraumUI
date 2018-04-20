@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace TraumUI.Widgets {
-	public class ScrollContainer : IWidget {
+	public class ScrollContainer : BaseWidget {
 		IWidget _Body;
-
 		public IWidget Body {
 			get => _Body;
 			set {
@@ -18,12 +17,10 @@ namespace TraumUI.Widgets {
 		int ScrollX, ScrollY;
 		(int, int) LastMax;
 		
-		public IWidget Parent { get; set; }
-		public int? TabIndex { get; set; }
-		public IReadOnlyList<IWidget> Children => new[] { Body };
-		public (int, int) Size((int, int) maxSpace) => maxSpace;
+		public override IReadOnlyList<IWidget> Children => new[] { Body };
+		public override (int, int) Size((int, int) maxSpace) => maxSpace;
 
-		public IReadOnlyList<Rope> Render((int, int) maxSpace) {
+		public override IReadOnlyList<Rope> Render((int, int) maxSpace) {
 			LastMax = maxSpace;
 			var ren = Body?.Render(maxSpace);
 			if(ren == null) return new Rope[0];
@@ -43,11 +40,7 @@ namespace TraumUI.Widgets {
 			return ren;
 		}
 
-		public void Focus() {}
-		public void Unfocus() {}
-		public void Click() {}
-
-		public bool Key(ConsoleKeyInfo key) {
+		public override bool Key(ConsoleKeyInfo key) {
 			switch(key.Key) {
 				case ConsoleKey.UpArrow:
 					ScrollY = Math.Max(0, ScrollY - 1);

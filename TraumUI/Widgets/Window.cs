@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace TraumUI.Widgets {
-	public class Window : IWidget {
+	public class Window : BaseWidget {
 		public Rope Title;
 		IWidget _Body;
-
 		public IWidget Body {
 			get => _Body;
 			set {
@@ -18,15 +17,8 @@ namespace TraumUI.Widgets {
 
 		public Window(Rope title = null) => Title = title ?? Rope.Empty;
 
-		public IWidget Parent { get; set; }
-		public int? TabIndex {
-			get => null;
-			set => throw new NotImplementedException();
-		}
-		public IReadOnlyList<IWidget> Children => new [] { Body };
-		public (int, int) Size((int, int) maxSpace) => maxSpace;
-
-		public IReadOnlyList<Rope> Render((int, int) maxSpace) {
+		public override IReadOnlyList<IWidget> Children => new [] { Body };
+		public override IReadOnlyList<Rope> Render((int, int) maxSpace) {
 			var oarray = new Rope[Math.Max(maxSpace.Item2, 3)];
 
 			oarray[0] = "┏━ " + Title.Substring(0, Math.Max(0, Math.Min(Title.Length, maxSpace.Item1 - 5))) + " " + new string('━', Math.Max(0, maxSpace.Item1 - Title.Length - 5)) + "┓";
@@ -49,17 +41,5 @@ namespace TraumUI.Widgets {
 			
 			return oarray;
 		}
-
-		public void Focus() {
-			throw new NotImplementedException();
-		}
-
-		public void Unfocus() {
-			throw new NotImplementedException();
-		}
-		
-		public void Click() {}
-		
-		public bool Key(ConsoleKeyInfo key) => false;
 	}
 }

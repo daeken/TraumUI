@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace TraumUI.Widgets {
-	public class Textbox : IWidget {
+	public class Textbox : FocusableWidget {
 		string _Value = "";
 		public string Value {
 			get => _Value;
@@ -13,7 +13,6 @@ namespace TraumUI.Widgets {
 			}
 		}
 		
-		public bool Focused;
 		bool _Password;
 		public bool Password {
 			get => _Password;
@@ -34,23 +33,16 @@ namespace TraumUI.Widgets {
 
 		public event EventHandler<string> Changed = (_, __) => { };
 		
-		public IWidget Parent { get; set; }
-		public int? TabIndex { get; set; }
-		public IReadOnlyList<IWidget> Children => new IWidget[0];
-		public (int, int) Size((int, int) maxSpace) => (Math.Min(maxSpace.Item1, Width + 4), 1);
+		public override (int, int) Size((int, int) maxSpace) => (Math.Min(maxSpace.Item1, Width + 4), 1);
 
-		public IReadOnlyList<Rope> Render((int, int) maxSpace) {
+		public override IReadOnlyList<Rope> Render((int, int) maxSpace) {
 			Rope inner = Value.Substring(0, Math.Min(Value.Length, Width));
 			if(inner.Length < Width)
 				inner += new string(' ', Width - inner.Length);
 			return new[] { ("[ " + inner.Underline() + " ]").If(Focused, x => x.Bold().If(InputCursor < Math.Min(Width, maxSpace.Item1 - 3), y => y.CursorAt(2 + InputCursor))) };
 		}
 
-		public void Focus() => this.RedrawWith(() => Focused = true);
-		public void Unfocus() => this.RedrawWith(() => Focused = false);
-		public void Click() => throw new NotImplementedException();
-
-		public bool Key(ConsoleKeyInfo key) {
+		public override bool Key(ConsoleKeyInfo key) {
 			switch(key.Key) {
 				case ConsoleKey.Backspace:
 					if(Value.Length != 0)

@@ -8,7 +8,7 @@ namespace TraumUI.Widgets {
 		Vertical
 	}
 	
-	public class SplitPanel : IWidget {
+	public class SplitPanel : BaseWidget {
 		public SplitDirection Direction { get; }
 		readonly List<(Dimension, IWidget)> _Children = new List<(Dimension, IWidget)>();
 
@@ -16,11 +16,9 @@ namespace TraumUI.Widgets {
 		
 		public void Add(Dimension dimension, IWidget widget) => _Children.Add((dimension, widget.Do(x => x.Parent = this)));
 
-		public IWidget Parent { get; set; }
-		public int? TabIndex { get; set; }
-		public IReadOnlyList<IWidget> Children => _Children.Select(x => x.Item2).ToList();
+		public override IReadOnlyList<IWidget> Children => _Children.Select(x => x.Item2).ToList();
 
-		public (int, int) Size((int, int) maxSpace) {
+		public override (int, int) Size((int, int) maxSpace) {
 			if(Direction == SplitDirection.Horizontal) {
 				var width = 0;
 				foreach(var (dim, _) in _Children)
@@ -34,7 +32,7 @@ namespace TraumUI.Widgets {
 			}
 		}
 
-		public IReadOnlyList<Rope> Render((int, int) maxSpace) {
+		public override IReadOnlyList<Rope> Render((int, int) maxSpace) {
 			var osize = Size(maxSpace);
 			var oarray = Enumerable.Range(0, osize.Item2).Select(x => Rope.Empty).ToArray();
 
@@ -74,17 +72,5 @@ namespace TraumUI.Widgets {
 			
 			return oarray;
 		}
-
-		public void Focus() {
-			throw new NotImplementedException();
-		}
-
-		public void Unfocus() {
-			throw new NotImplementedException();
-		}
-		
-		public void Click() {}
-		
-		public bool Key(ConsoleKeyInfo key) => false;
 	}
 }

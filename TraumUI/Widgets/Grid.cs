@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace TraumUI.Widgets {
-	public class Grid : IWidget {
+	public class Grid : BaseWidget {
 		public int Columns {
 			get => Rows == 0 ? 0 : _Children[0].Length;
 			set {
@@ -30,16 +30,11 @@ namespace TraumUI.Widgets {
 		public int HPadding = 1, VPadding = 0;
 
 		IWidget[][] _Children;
+		public override IReadOnlyList<IWidget> Children => _Children.SelectMany(x => x).Where(x => x != null).ToList();
+		public void Add(int column, int row, IWidget widget) => _Children[row][column] = widget.Do(x => x.Parent = this);
 
 		public Grid(int columns = 2, int rows = 2) =>
 			_Children = Enumerable.Range(0, rows).Select(y => Enumerable.Range(0, columns).Select(x => (IWidget) null).ToArray()).ToArray();
-
-		public IWidget Parent { get; set; }
-		public int? TabIndex { get; set; }
-
-		public IReadOnlyList<IWidget> Children => _Children.SelectMany(x => x).Where(x => x != null).ToList();
-
-		public void Add(int column, int row, IWidget widget) => _Children[row][column] = widget.Do(x => x.Parent = this);
 
 		(int[] ColumnWidths, int[] RowHeights) CellSizes((int, int) maxSpace) {
 			if(Rows == 0 || Columns == 0) return (new int[0], new int[0]);
@@ -77,13 +72,13 @@ namespace TraumUI.Widgets {
 			return (columnWidths, rowHeights);
 		}
 
-		public (int, int) Size((int, int) maxSpace) {
+		public override (int, int) Size((int, int) maxSpace) {
 			if(Rows == 0 || Columns == 0) return (0, 0);
 			var (columnWidths, rowHeights) = CellSizes(maxSpace);
 			return (columnWidths.Sum() + HPadding * (Columns - 1), rowHeights.Sum() + VPadding * (Rows - 1));
 		}
 
-		public IReadOnlyList<Rope> Render((int, int) maxSpace) {
+		public override IReadOnlyList<Rope> Render((int, int) maxSpace) {
 			var (columnWidths, rowHeights) = CellSizes(maxSpace);
 			var olines = new Rope[rowHeights.Sum() + VPadding * (Rows - 1)];
 			var voff = 0;
@@ -115,16 +110,5 @@ namespace TraumUI.Widgets {
 			}
 			return olines;
 		}
-
-		public void Focus() {
-			throw new NotImplementedException();
-		}
-
-		public void Unfocus() {
-			throw new NotImplementedException();
-		}
-		
-		public void Click() {}
-		public bool Key(ConsoleKeyInfo key) => false;
 	}
 }
