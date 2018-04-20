@@ -31,7 +31,7 @@ namespace TraumUI.Widgets {
 
 		IWidget[][] _Children;
 		public override IReadOnlyList<IWidget> Children => _Children.SelectMany(x => x).Where(x => x != null).ToList();
-		public void Add(int column, int row, IWidget widget) => _Children[row][column] = widget.Do(x => x.Parent = this);
+		public void Add(int column, int row, IWidget widget) => _Children[row][column] = widget.SetParent(this, previous: _Children[row][column]);
 
 		public Grid(int columns = 2, int rows = 2) =>
 			_Children = Enumerable.Range(0, rows).Select(y => Enumerable.Range(0, columns).Select(x => (IWidget) null).ToArray()).ToArray();

@@ -8,11 +8,7 @@ namespace TraumUI.Widgets {
 		IWidget _Body;
 		public IWidget Body {
 			get => _Body;
-			set {
-				if(_Body != null) _Body.Parent = null;
-				_Body = value;
-				_Body.Parent = this;
-			}
+			set => _Body = value.SetParent(this, previous: Body);
 		}
 
 		public Window(Rope title = null) => Title = title ?? Rope.Empty;

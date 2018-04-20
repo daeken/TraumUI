@@ -38,5 +38,11 @@ namespace TraumUI {
 				foreach(var elem in child.WalkTabIndex(cur))
 					yield return elem;
 		}
+
+		public static IWidget SetParent(this IWidget widget, IWidget parent, IWidget previous = null) {
+			if(previous != null) previous.Parent = null;
+			widget.Parent = parent;
+			return widget;
+		}
 	}
 }
