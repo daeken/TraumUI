@@ -35,14 +35,23 @@ namespace TraumUI {
 			if(widget.TabIndex != null)
 				yield return (cur, widget);
 			foreach(var child in widget.Children)
-				foreach(var elem in child.WalkTabIndex(cur))
-					yield return elem;
+				if(child != null)
+					foreach(var elem in child.WalkTabIndex(cur))
+						yield return elem;
 		}
 
 		public static IWidget SetParent(this IWidget widget, IWidget parent, IWidget previous = null) {
+			Tui.Instance.RedrawRequested = true;
+				
 			if(previous != null) previous.Parent = null;
 			widget.Parent = parent;
 			return widget;
+		}
+
+		public static IEnumerable<(int I, T Value)> Enumerate<T>(this IEnumerable<T> e) {
+			var i = 0;
+			foreach(var elem in e)
+				yield return (i++, elem);
 		}
 	}
 }

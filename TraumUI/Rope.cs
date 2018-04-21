@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualBasic.CompilerServices;
+using TraumUI.Widgets;
 
 namespace TraumUI {
 	public enum Color {
@@ -12,7 +13,8 @@ namespace TraumUI {
 		Blue, 
 		Purple, 
 		Cyan, 
-		White
+		White, 
+		None = -1
 	}
 
 	[Flags]
@@ -119,6 +121,8 @@ namespace TraumUI {
 
 		public Rope Bold() => this.Select(x => x.Bold()).ToRope();
 		public Rope Underline() => this.Select(x => x.Underline()).ToRope();
+		public Rope ForegroundColor(Color color, bool bright = false) => this.Select(x => x.ForegroundColor(color, bright)).ToRope();
+		public Rope BackgroundColor(Color color, bool bright = false) => this.Select(x => x.BackgroundColor(color, bright)).ToRope();
 
 		public Rope CursorAt(int offset = 0) {
 			if(offset == 0)
@@ -138,6 +142,15 @@ namespace TraumUI {
 			foreach(var chunk in this)
 				Console.Error.WriteLine($"- length {chunk.Length} - '{chunk.Text}'");
 		}
+
+		public Rope ToFixed(int len) {
+			var rlen = Length;
+			if(len == rlen) return this;
+			if(len < rlen) return Substring(0, len);
+			return this + new TextPiece(" ") * (len - rlen);
+		}
+		
+		public static implicit operator Text(Rope rope) => new Text(rope);
 	}
 	
 	public struct TextPiece {
@@ -149,7 +162,7 @@ namespace TraumUI {
 
 		public int Length => Text.Length;
 
-		public TextPiece(string text, Color foreground = 0, Color background = 0, Decoration decorations = 0) {
+		public TextPiece(string text, Color foreground = Color.Black, Color background = Color.None, Decoration decorations = 0) {
 			Text = text;
 			Foreground = foreground;
 			Background = background;
@@ -177,6 +190,8 @@ namespace TraumUI {
 		
 		public TextPiece Bold() => new TextPiece(Text, Foreground, Background, Decorations | Decoration.Bold);
 		public TextPiece Underline() => new TextPiece(Text, Foreground, Background, Decorations | Decoration.Underline);
+		public TextPiece ForegroundColor(Color color, bool bright = false) => new TextPiece(Text, color, Background, Decorations | (bright ? Decoration.Bright : 0));
+		public TextPiece BackgroundColor(Color color, bool bright = false) => new TextPiece(Text, Foreground, color, Decorations | (bright ? Decoration.BrightBackground : 0));
 		public Rope CursorAt(int offset = 0) {
 			if(offset == 0)
 				return new TextPiece(Text, Foreground, Background, Decorations | Decoration.CursorAtStart);
@@ -189,15 +204,14 @@ namespace TraumUI {
 		public string ToAnsiString() {
 			if(Decorations == 0 && Foreground == 0 && Background == 0)
 				return Text;
-			var fg = (TermionSharp.Color) Foreground;
-			var bg = (TermionSharp.Color) Background;
-			if((Decorations & Decoration.Bold) != 0) fg |= TermionSharp.Color.Bold;
-			if((Decorations & Decoration.Underline) != 0) fg |= TermionSharp.Color.Underline;
-			if((Decorations & Decoration.Bright) != 0) fg |= TermionSharp.Color.Bright;
-			if((Decorations & Decoration.BrightBackground) != 0) bg |= TermionSharp.Color.Bright;
+			var fg = (int) Foreground;
+			var bg = (int) Background;
+			if((Decorations & Decoration.Bold) != 0 && fg != -1) fg |= (int) TermionSharp.Color.Bold;
+			if((Decorations & Decoration.Underline) != 0 && fg != -1) fg |= (int) TermionSharp.Color.Underline;
+			if((Decorations & Decoration.Bright) != 0 && fg != -1) fg |= (int) TermionSharp.Color.Bright;
+			if((Decorations & Decoration.BrightBackground) != 0 && fg != -1) bg |= (int) TermionSharp.Color.Bright;
 			var ret = Text;
-			if(bg != 0) ret = TermionSharp.Terminal.Background(bg) + ret;
-			if(fg != 0) ret = TermionSharp.Terminal.Foreground(fg) + ret;
+			if(fg != -1 || bg != -1) ret = TermionSharp.Terminal.ColorEscape(fg != -1 ? (TermionSharp.Color?) fg : null, bg != -1 ? (TermionSharp.Color?) bg : null) + ret;
 			ret += TermionSharp.Terminal.Foreground(TermionSharp.Color.Reset);
 			return ret;
 		}

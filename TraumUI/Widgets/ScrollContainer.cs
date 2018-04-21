@@ -10,6 +10,9 @@ namespace TraumUI.Widgets {
 			set => _Body = value.SetParent(this, previous: Body);
 		}
 
+		public bool Autoscroll;
+		bool Autoscrolling = true;
+
 		int ScrollX, ScrollY;
 		(int, int) LastMax;
 		
@@ -19,9 +22,15 @@ namespace TraumUI.Widgets {
 		public override IReadOnlyList<Rope> Render((int, int) maxSpace) {
 			LastMax = maxSpace;
 			var ren = Body?.Render(maxSpace);
-			if(ren == null) return new Rope[0];
+			if(ren == null || ren.Count == 0) return new Rope[0];
 
-			ScrollY = Math.Min(ScrollY, Math.Max(0, ren.Count - maxSpace.Item2 - 1));
+			var asmax = Math.Max(0, ren.Count - maxSpace.Item2);
+			if(Autoscroll && Autoscrolling)
+				ScrollY = asmax;
+			else
+				ScrollY = Math.Min(ScrollY, Math.Max(0, ren.Count - maxSpace.Item2));
+			if(Autoscroll && !Autoscrolling && ScrollY >= asmax)
+				Autoscrolling = true;
 			var longestLine = ren.Select(x => x.Length).Max();
 			if(ScrollY != 0)
 				ren = ren.Skip(ScrollY).ToList();
@@ -40,6 +49,7 @@ namespace TraumUI.Widgets {
 			switch(key.Key) {
 				case ConsoleKey.UpArrow:
 					ScrollY = Math.Max(0, ScrollY - 1);
+					Autoscrolling = false;
 					break;
 				case ConsoleKey.DownArrow:
 					ScrollY += 1;
@@ -52,6 +62,7 @@ namespace TraumUI.Widgets {
 					break;
 				case ConsoleKey.PageUp:
 					ScrollY = Math.Max(0, ScrollY - LastMax.Item2);
+					Autoscrolling = false;
 					break;
 				case ConsoleKey.PageDown:
 					ScrollY += LastMax.Item2;
@@ -61,6 +72,7 @@ namespace TraumUI.Widgets {
 					break;
 				case ConsoleKey.End:
 					ScrollX = -1;
+					Autoscrolling = true;
 					break;
 				default:
 					return false;

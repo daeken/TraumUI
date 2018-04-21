@@ -21,5 +21,8 @@ namespace TraumUI.Widgets {
 		}
 
 		public override IReadOnlyList<Rope> Render((int, int) maxSpace) => Value.Split('\n');
+		
+		public static implicit operator Text(string text) => new Text(text);
+		public static implicit operator Text(Rope rope) => new Text(rope);
 	}
 }

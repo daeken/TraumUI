@@ -1,11 +1,37 @@
-﻿using TraumUI.Widgets;
+﻿using System;
+using System.Linq;
+using MoreLinq;
+using TraumUI.Widgets;
 using static System.Console;
 
 namespace TraumUI.ExampleApp {
 	class Program {
 		static void Main(string[] args) {
 			using(var term = new Tui()) {
-				var tree = new SplitPanel(SplitDirection.Horizontal);
+				var tree = new SplitPanel(SplitDirection.Vertical);
+				term.Root = tree;
+				var top = new Window("Table Tester");
+				var table = new Table((new PercentageDimension(30), "First Column"), (new PercentageDimension(50), "Middle"), (new StretchDimension(), "Right")) {
+					new TableRow((Text) "First first", (Text) "First middle", (Text) "First right").Do(x => x.Clicked += _ => WriteLine("Clicked first row " + new string('!', 1000) + "sadfpoj")), 
+					new Text [] { "Foo", "bar", "baz" }, 
+				};
+				Enumerable.Range(0, 100).ForEach(i => {
+					var tpad = i % 7 == 0 ? new Rope("foo!!!\n") * 5 : "";
+					var row = new TableRow($"#{i}", "Middle", $"{i}!" + tpad);
+					row.Clicked += _ => WriteLine($"Clicked row {i}");
+					table.Add(row);
+				});
+				table.TabIndex = 1;
+				top.Body = table;
+				tree.Add(new PercentageDimension(40), top);
+				var bottom = new Window();
+				bottom.Body = new ScrollContainer {
+					TabIndex = 2, 
+					Autoscroll = true, 
+					Body = new FauxConsole().Do(x => x.SetActive())
+				};
+				tree.Add(new PercentageDimension(60), bottom);
+				/*var tree = new SplitPanel(SplitDirection.Horizontal);
 				term.Root = tree;
 				var left = new Window($"Left window");
 				left.Body = new FauxConsole().Do(x => x.SetActive());
@@ -29,7 +55,7 @@ namespace TraumUI.ExampleApp {
 				grid.Add(1, 2, new Textbox { TabIndex = 4 }.Do(tb => tb.Changed += (_, tt) => WriteLine($"Textbox changed to '{tt}'")));
 				lr.Body = grid;
 				right.Add(new FixedDimension(25), ur);
-				right.Add(new StretchDimension(), lr);
+				right.Add(new StretchDimension(), lr);*/
 			}
 		}
 	}

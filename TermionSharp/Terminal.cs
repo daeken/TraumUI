@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 
 namespace TermionSharp {
 	[Flags]
-	public enum Color : byte {
+	public enum Color {
 		Black, 
 		Red, 
 		Green, 
@@ -16,7 +17,8 @@ namespace TermionSharp {
 		Bold=32, 
 		Bright=64, 
 		Underline=128, 
-		Reset=255
+		Reset=255, 
+		None=-1
 	}
 	
 	public class Terminal : IDisposable {
@@ -61,6 +63,20 @@ namespace TermionSharp {
 				prefix = "0;10";
 
 			return Csi($"{prefix}{ac}m");
+		}
+
+		public static string ColorEscape(Color? fg, Color? bg) {
+			var attrs = new List<string>();
+			if((fg & Color.Underline) != 0)
+				attrs.Add("4");
+			if((fg & Color.Bold) != 0)
+				attrs.Add("1");
+			if(fg != null)
+				attrs.Add($"{((fg & Color.Bright) != 0 ? 9 : 3)}{(int) fg & 0xF}");
+			if(bg != null)
+				attrs.Add($"{((bg & Color.Bright) != 0 ? 10 : 4)}{(int) bg & 0xF}");
+
+			return Csi($"{string.Join(';', attrs)}m");
 		}
 
 		public Terminal() {

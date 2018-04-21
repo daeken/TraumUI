@@ -16,7 +16,7 @@ namespace TraumUI.Widgets {
 					Buffer = Enumerable.Range(0, value - Buffer.Length).Select(x => (string) null).Concat(Buffer).ToArray();
 			}
 		}
-		public bool Linewrap = false;
+		public bool Linewrap = true;
 
 		string[] Buffer = new string[1000];
 		(int, int) Position = (0, 0);
@@ -29,20 +29,17 @@ namespace TraumUI.Widgets {
 		public (int, int) Size((int, int) maxSpace) => maxSpace;
 
 		public IReadOnlyList<Rope> Render((int, int) maxSpace) {
-			var oarray = new Rope[Math.Min(maxSpace.Item2, Buffer.Length)];
-			var oi = 0;
-			for(var i = 0; i < oarray.Length && oi < oarray.Length; ++i) {
+			var oarray = new List<Rope>();
+			for(var i = 0; i < Buffer.Length; ++i) {
 				var line = Buffer[i];
-				if(line == null) {
-					oarray[oi++] = "";
-					continue;
-				}
+				if(line == null)
+					break;
 
 				if(!Linewrap || line.Length <= maxSpace.Item1)
-					oarray[oi++] = line;
+					oarray.Add(line);
 				else
-					for(var j = 0; j < line.Length && oi < oarray.Length; j += maxSpace.Item1)
-						oarray[oi++] = line.Substring(j, Math.Min(line.Length - j, maxSpace.Item1));
+					for(var j = 0; j < line.Length; j += maxSpace.Item1)
+						oarray.Add(line.Substring(j, Math.Min(line.Length - j, maxSpace.Item1)));
 			}
 			return oarray;
 		}
