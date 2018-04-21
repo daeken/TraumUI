@@ -4,11 +4,11 @@ using System.Threading;
 using TermionSharp;
 
 namespace TraumUI {
-	public class Tui : IDisposable {
+	public class Tui {
 		public const char CursorPlaceholder = '\x06';
 		public static Tui Instance { get; private set; }
 		
-		bool Disposed, Exiting;
+		bool Exiting;
 		readonly Terminal Term = new Terminal();
 		public IWidget Root;
 
@@ -57,12 +57,12 @@ namespace TraumUI {
 			}
 		}
 
-		void Run() {
+		public void Run() {
 			Term.Resize += Redraw;
 			TabCycle();
 			Redraw();
 			
-			while(!Disposed && !Exiting) {
+			while(!Exiting) {
 				if(RedrawRequested)
 					Redraw();
 				var key = Term.ReadKey();
@@ -84,6 +84,8 @@ namespace TraumUI {
 				}
 				Thread.Sleep(16);
 			}
+			
+			Term?.Dispose();
 		}
 
 		bool Bubble(Func<IWidget, bool> func) {
@@ -131,18 +133,6 @@ namespace TraumUI {
 			Term.Write("\n");
 			Term?.Dispose();
 			Environment.Exit(0);
-		}
-
-		public void Dispose() {
-			lock(this)
-				if(Disposed) return;
-
-			Run();
-
-			lock(this) {
-				Disposed = true;
-				Term?.Dispose();
-			}
 		}
 	}
 }
