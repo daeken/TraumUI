@@ -145,7 +145,7 @@ namespace TraumUI.Widgets {
 					return false;
 			}
 
-			Tui.Instance.RedrawRequested = true;
+			Tui.RequestRedraw();
 
 			return true;
 		}

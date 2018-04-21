@@ -8,7 +8,7 @@ namespace TraumUI.Widgets {
 		public Rope Value {
 			get => BValue;
 			set {
-				Tui.Instance.RedrawRequested = true;
+				Tui.RequestRedraw();
 				BValue = value ?? Rope.Empty;
 			}
 		}

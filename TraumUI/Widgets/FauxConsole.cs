@@ -60,7 +60,7 @@ namespace TraumUI.Widgets {
 			} else
 				Buffer[Position.Item2] = (Buffer[Position.Item2] ?? "") + value;
 
-			Tui.Instance.RedrawRequested = true;
+			Tui.RequestRedraw();
 		}
 
 		public override Encoding Encoding => Encoding.UTF8;

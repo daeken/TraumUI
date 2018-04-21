@@ -7,7 +7,7 @@ namespace TraumUI.Widgets {
 		public string Value {
 			get => _Value;
 			set {
-				Tui.Instance.RedrawRequested = true;
+				Tui.RequestRedraw();
 				_Value = value ?? "";
 				Changed(this, _Value);
 			}

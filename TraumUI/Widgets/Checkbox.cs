@@ -9,7 +9,7 @@ namespace TraumUI.Widgets {
 		public bool Checked {
 			get => _Checked;
 			set {
-				Tui.Instance.RedrawRequested = true;
+				Tui.RequestRedraw();
 				_Checked = value;
 				Changed(this, _Checked);
 			}

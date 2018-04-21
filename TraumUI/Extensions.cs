@@ -20,7 +20,7 @@ namespace TraumUI {
 
 		public static void RedrawWith(this IWidget widget, Action func) {
 			func();
-			Tui.Instance.RedrawRequested = true;
+			Tui.RequestRedraw();
 		}
 
 		public static IEnumerable<IWidget> AndDescendents(this IWidget widget) {
@@ -41,7 +41,7 @@ namespace TraumUI {
 		}
 
 		public static IWidget SetParent(this IWidget widget, IWidget parent, IWidget previous = null) {
-			Tui.Instance.RedrawRequested = true;
+			Tui.RequestRedraw();
 				
 			if(previous != null) previous.Parent = null;
 			widget.Parent = parent;

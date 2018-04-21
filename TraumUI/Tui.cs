@@ -20,6 +20,7 @@ namespace TraumUI {
 			get => _RedrawRequested;
 			set => _RedrawRequested = _RedrawRequested || value;
 		}
+		public static void RequestRedraw() => Instance.RedrawRequested = true;
 
 		public Tui() {
 			if(Instance != null)
