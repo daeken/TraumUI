@@ -83,7 +83,7 @@ namespace TraumUI {
 						Bubble(x => x.Key(key));
 						break;
 				}
-				Thread.Sleep(16);
+				Thread.Sleep(33);
 			}
 			
 			Term?.Dispose();

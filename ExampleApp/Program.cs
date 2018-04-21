@@ -11,9 +11,11 @@ namespace TraumUI.ExampleApp {
 			var tree = new SplitPanel(SplitDirection.Vertical);
 			term.Root = tree;
 			var top = new Window("Table Tester");
+			var renderCount = 0;
 			var table = new Table((new PercentageDimension(30), "First Column"), (new PercentageDimension(50), "Middle"), (new StretchDimension(), "Right")) {
+				new TableRow(new ReactiveText(_ => $"{++renderCount}")), 
 				new TableRow((Text) "First first", (Text) "First middle", (Text) "First right").Do(x => x.Clicked += _ => WriteLine("Clicked first row " + new string('!', 1000) + "sadfpoj")), 
-				new Text [] { "Foo", "bar", "baz" }, 
+				new Text [] { "Foo", "bar", "baz" }
 			};
 			Enumerable.Range(0, 100).ForEach(i => {
 				var tpad = i % 7 == 0 ? new Rope("foo!!!\n") * 5 : "";
